@@ -3,6 +3,19 @@
 
 <?php include("../includes/layouts/header.php"); ?>
 
+<?php
+// выясняем какая страница задана
+  if (isset($_GET["subject"])) { // задан ли subject
+    $select_subject_id = $_GET["subject"];
+    $select_page_id = null; // задаем знач. по умолчанию/определяем переменную
+  } elseif (isset($_GET["page"])) { // задан ли page
+    $select_page_id = $_GET["page"];
+    $select_subject_id = null; // задаем знач. по умолчанию/определяем переменную
+  } else { // умолчание пока ничего не выбрано
+    $select_subject_id = null;
+    $select_page_id = null;
+  }
+ ?>
 <div id="main">
   <div id="navigation">
     <ul class="subjects">
@@ -13,7 +26,8 @@
         // 3. Использование возвращенных данных (если есть) ?>
 
         <li>
-          <?php echo $subject["menu_name"]; ?>
+          <a href="manage_content.php?subject=<?php
+           echo urlencode($subject["id"]) ?>"> <?php echo $subject["menu_name"]; ?> </a>
           <?php
           // 2. выполняем запрос к базе данных
             $page_set = find_pages_for_subject($subject["id"]);
@@ -22,7 +36,8 @@
             <?php while($page = mysqli_fetch_assoc($page_set)) {
               // Использование возвращенных данных (если есть) ?>
               <li>
-                <?php echo $page["menu_name"]; ?>
+                <a href="manage_content.php?page=<?php
+           echo urlencode($page["id"]) ?>"> <?php echo $page["menu_name"]; ?> </a>
               </li>
             <?php
               }
@@ -40,7 +55,8 @@
   </div>
   <div id="page">
     <h2>Управление контентом сайта</h2>
-
+    <?php echo $select_subject_id; ?> <br>
+    <?php echo $select_page_id; ?>
   </div>
 </div>
 

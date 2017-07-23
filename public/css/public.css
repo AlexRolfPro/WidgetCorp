@@ -78,12 +78,13 @@ a:hover {
 }
 
 #navigation a {
-  color: #D4E6F4;
+  color: #EEE4B9;
   text-decoration: none;
 }
 
-#navigation a:hover {
-  color: #FFFFFF;
+#navigation a:hover,
+#navigation li:hover {
+  color: #1A446C;
 }
 
 .subjects {
