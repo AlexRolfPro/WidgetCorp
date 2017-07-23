@@ -6,55 +6,36 @@
 <div id="main">
   <div id="navigation">
     <ul class="subjects">
-      <?php
-      // 2. выполняем запрос к базе данных
-        $query = "SELECT * ";
-        $query .= "FROM subjects ";
-        $query .= "WHERE visible = 1 ";
-        $query .= "ORDER BY position ASC";
-        $subject_set = mysqli_query($connection, $query);
-        // проверяем или запрос правильный
-        confirm_query($subject_set);
-      ?>
-      <?php
-        // 3. Использование возвращенных данных (если есть)
-        while($subject = mysqli_fetch_assoc($subject_set)) {
-      ?>
+      <?php $subject_set = find_all_subjects();
+      // 2. выполняем запрос к базе данных  ?>
+
+      <?php while($subject = mysqli_fetch_assoc($subject_set)) {
+        // 3. Использование возвращенных данных (если есть) ?>
+
         <li>
           <?php echo $subject["menu_name"]; ?>
           <?php
           // 2. выполняем запрос к базе данных
-            $query = "SELECT * ";
-            $query .= "FROM pages ";
-            $query .= "WHERE visible = 1 ";
-            $query .= "AND subject_id = {$subject["id"]} ";
-            $query .= "ORDER BY position ASC";
-            $page_set = mysqli_query($connection, $query);
-            // проверяем или запрос правильный
-            confirm_query($page_set);
+            $page_set = find_pages_for_subject($subject["id"]);
           ?>
           <ul class="pages">
-            <?php
-              // Использование возвращенных данных (если есть)
-              while($page = mysqli_fetch_assoc($page_set)) {
-            ?>
-              <li><?php echo $page["menu_name"]; ?></li>
+            <?php while($page = mysqli_fetch_assoc($page_set)) {
+              // Использование возвращенных данных (если есть) ?>
+              <li>
+                <?php echo $page["menu_name"]; ?>
+              </li>
             <?php
               }
             ?>
-            <?php
-            // Отпустить/освободить возвращенные данные
-               mysqli_free_result($page_set);
-            ?>
+            <?php mysqli_free_result($page_set);
+            // Отпустить/освободить возвращенные данные ?>
           </ul>
         </li>
        <?php
       }
        ?>
-     <?php
-     // 4. Отпустить/освободить возвращенные данные
-        mysqli_free_result($subject_set);
-      ?>
+     <?php mysqli_free_result($subject_set);
+     // 4. Отпустить/освободить возвращенные данные ?>
     </ul>
   </div>
   <div id="page">
@@ -65,7 +46,5 @@
 
 <?php include("../includes/layouts/footer.php"); ?>
 
-<?php
-// 5. Закрыть соединение с базой данных
-mysqli_close($connection);
- ?>
+<?php mysqli_close($connection);
+// 5. Закрыть соединение с базой данных ?>
