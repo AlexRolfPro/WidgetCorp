@@ -2,7 +2,7 @@
   function confirm_query($result_set) {
     // проверяем или запрос правильный
     if (!$result_set) {
-      die("Соединене с базой провалилось");
+      die("Соединене с базой провалилось 1");
     }
   }
 
@@ -11,7 +11,7 @@
     // выполняем запрос к базе данных
           $query = "SELECT * ";
           $query .= "FROM subjects ";
-          $query .= "WHERE visible = 1 ";
+          // $query .= "WHERE visible = 1 ";
           $query .= "ORDER BY position ASC";
           $subject_set = mysqli_query($connection, $query);
           // проверяем или запрос правильный
@@ -22,11 +22,14 @@
   function find_pages_for_subject($subject_id) {
       global $connection;
 
+      $safe_subject_id = mysqli_real_escape_string($connection, $subject_id);
+          // защита от sql инекции
+
       // выполняем запрос к базе данных
       $query = "SELECT * ";
       $query .= "FROM pages ";
       $query .= "WHERE visible = 1 ";
-      $query .= "AND subject_id = {$subject_id} ";
+      $query .= "AND subject_id = {$safe_subject_id} ";
       $query .= "ORDER BY position ASC";
       $page_set = mysqli_query($connection, $query);
       // проверяем или запрос правильный
@@ -34,10 +37,32 @@
       return $page_set; // вернуть набор страниц
   }
 
-  // навигация берет 2 аргумента
-  // текущий выбранный subject id (если есть)
-  // текущий выбранный page id (если есть)
+  function find_subject_by_id($subject_id) {
+    global $connection; // для использования внутри функции
+
+    $safe_subject_id = mysqli_real_escape_string($connection, $subject_id);
+    // защита от sql инекции
+
+    // выполняем запрос к базе данных
+    $query = "SELECT * ";
+    $query .= "FROM subjects ";
+    $query .= "WHERE id = {$safe_subject_id} ";
+    $query .= "LIMIT 1";
+    $subject_set = mysqli_query($connection, $query);
+    // var_dump($connection, $query); // отладка ошибки поиск
+    // проверяем или запрос правильный
+    confirm_query($subject_set);
+    if ($subject = mysqli_fetch_assoc($subject_set)) {
+      return $subject;  // локальная переменная
+    } else {
+      return null;
+    }
+  };
+
   function navigation($subject_id, $page_id) {
+    // навигация берет 2 аргумента
+    // текущий выбранный subject id (если есть)
+    // текущий выбранный page id (если есть)
       $output = "<ul class=\"subjects\">";
       $subject_set = find_all_subjects();
         // 2. выполняем запрос к базе данных

@@ -20,12 +20,20 @@
   <div id="navigation">
     <?php // include("../includes/layouts/navigation.php"); // первый вариант?>
     <?php echo navigation($select_subject_id, $select_page_id); // 2 вариант?>
-
   </div>
   <div id="page">
     <h2>Управление контентом сайта</h2>
-    <?php echo $select_subject_id; ?> <br>
-    <?php echo $select_page_id; ?>
+    <?php if ($select_subject_id) { ?>
+
+      <?php $current_subject = find_subject_by_id($select_subject_id); ?>
+
+      Название меню: <?php echo $current_subject["menu_name"]; ?> <br>
+
+    <?php } elseif ($select_page_id) {?>
+      <?php echo $select_page_id; ?>
+    <?php } else { ?>
+      Пожалуйста выберите раздел или страницу.
+    <?php } ?>
   </div>
 </div>
 
